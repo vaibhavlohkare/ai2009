@@ -1,9 +1,6 @@
-#summary One-sentence summary of this page.
-
 = Introduction =
 
 How to join the ai2009 project in your Eclipse
-
 
 = Details =
 
@@ -17,12 +14,14 @@ How to join the ai2009 project in your Eclipse
 
 5) *Select* Create a new repository location, then *Click* "Next"
 
-6) The Url should be "http://ai2009.googlecode.com/svn/trunk", which could also be checked from the "Source" tab above.
+6) The Url is "http://ai2009.googlecode.com/svn/trunk". (Check it from the "Source" tab above)
 
 7) *Accept* the license
 
-8) Put in your user name and password, which will be used to access the source code on Google. (check the Source tab above)
+8) Put in your user name and password, which are used to access the *source* code on Google. (Find them out from the Source tab above)
 
-9) It will pop up a window with projects you can join. *Select* ai2009, and Eclipse will setup the new project for you.
+9) It will pop up a window with projects you can join. Pick up "ai2009", and Eclipse will setup the new project for you.
 
 10) Try to add or modify files, and submit codes with SVN commands
+
+If you need a SVN shell on Windows, download TortoiseSVN-1.6.6.17493-win32-svn-1.6.6.msi
