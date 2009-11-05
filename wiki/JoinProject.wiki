@@ -18,7 +18,7 @@ How to join the ai2009 project in your Eclipse
 
 7) *Accept* the license
 
-8) Put in your user name and password, which are used to access the *source* code on Google. (Find them out from the Source tab above)
+8) Put in your user name and password, which are used to access the source code on Google. (Find them out from the *Source* tab above)
 
 9) It will pop up a window with projects you can join. Pick up "ai2009", and Eclipse will setup the new project for you.
 
