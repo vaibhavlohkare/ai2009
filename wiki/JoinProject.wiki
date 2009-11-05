@@ -6,7 +6,7 @@ How to join the ai2009 project in your Eclipse
 
 1) Install svn plug-in to Eclipse, like "tigris.subversion", which I am using.
 
-2) Open Eclipse, and specify any WorkSpace
+2) Open Eclipse, and specify your !WorkSpace
 
 3) *New* a project
 
