@@ -1,7 +1,7 @@
 package friends.crawler;
 import com.sleepycat.je.DatabaseException;
 
-import myGoogle.Common.SHA1;
+import friends.util.SHA1;
 import myGoogle.Common.Cache.LRUCachedDb;
 
 public class DupUrlEliminator 

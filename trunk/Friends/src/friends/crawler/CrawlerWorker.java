@@ -1,7 +1,7 @@
 package friends.crawler;
 
-import myGoogle.Common.SHA1;
-import myGoogle.Common.Message.StoreQueryResponseMessage;
+import friends.util.SHA1;
+import friends.common.StoreQueryResponseMessage;
 
 public class CrawlerWorker implements Runnable
 {	

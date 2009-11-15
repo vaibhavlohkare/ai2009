@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import myGoogle.Util.Disk;
+import friends.util.Disk;
 
 public class UrlFrontier
 {
