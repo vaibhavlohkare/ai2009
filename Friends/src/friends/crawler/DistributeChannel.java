@@ -2,8 +2,8 @@ package friends.crawler;
 
 import rice.p2p.commonapi.Id;
 import rice.p2p.commonapi.Message;
-import myGoogle.Crawler.Message.UrlDistibutionMessage;
-import myGoogle.Distributed.PastryAppWrapper;
+import friends.common.UrlDistibutionMessage;
+import friends.distributed.PastryAppWrapper;
 
 public class DistributeChannel extends PastryAppWrapper
 {

@@ -1,7 +1,7 @@
 package friends.crawler;
 
-import myGoogle.Crawler.Message.UrlDistibutionMessage;
-import myGoogle.Distributed.ConstantNodeIdFactory;
+import friends.common.UrlDistibutionMessage;
+import friends.distributed.ConstantNodeIdFactory;
 import rice.p2p.commonapi.Id;
 
 public class UrlDispatcher implements Runnable

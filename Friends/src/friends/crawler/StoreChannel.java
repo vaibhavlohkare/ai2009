@@ -2,13 +2,13 @@ package friends.crawler;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import myGoogle.Common.Packet;
-import myGoogle.Common.SHA1;
-import myGoogle.Common.Message.StorePeerAppendRequestMessage;
-import myGoogle.Common.Message.StoreQueryMessage;
-import myGoogle.Common.Message.StoreQueryResponseMessage;
-import myGoogle.Distributed.PastryAppWrapper;
-import myGoogle.StoreCoordinator.RepositoryInfo;
+import friends.common.StorePeerAppendRequestMessage;
+import friends.common.StoreQueryMessage;
+import friends.common.StoreQueryResponseMessage;
+import friends.distributed.PastryAppWrapper;
+import friends.util.Packet;
+import friends.util.RepositoryInfo;
+import friends.util.SHA1;
 import rice.p2p.commonapi.Id;
 import rice.p2p.commonapi.Message;
 
