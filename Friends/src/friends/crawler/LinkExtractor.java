@@ -1,37 +1,46 @@
 package friends.crawler;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
-import myGoogle.Util.BerkeleyDBAccess;
+//import myGoogle.Util.BerkeleyDBAccess;
+import java.lang.Object;
 
 import org.htmlparser.Node;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.lexer.Page;
 import org.htmlparser.nodes.TagNode;
 
-import com.sleepycat.je.DatabaseException;
+import friends.crawler.*;
+//import com.sleepycat.je.DatabaseException;
+
 
 
 
 public class LinkExtractor 
 {
 	//private int crawlerID;
-	private BerkeleyDBAccess<Long, LinkedList<String>> docToLinksMappingDb;
+	private Map<Long, LinkedList<String>> docToLinksMappingDb;
+	
 	public LinkExtractor(int crawlerID) throws Exception
 	{
 		//this.crawlerID = crawlerID;
-		docToLinksMappingDb= new BerkeleyDBAccess<Long, LinkedList<String>>(Long.class,LinkedList.class);
-		docToLinksMappingDb.createEnv("Data/LinkMapping"+crawlerID);
-		docToLinksMappingDb.openDB("LinkMapping", false);
+		docToLinksMappingDb = new HashMap<Long, LinkedList<String>>();
+		//TODO(alexis): Fill in database info
+		//docToLinksMappingDb.createEnv("Data/LinkMapping"+crawlerID);
+		//docToLinksMappingDb.openDB("LinkMapping", false);
 	}
 	
-	public  void Process(long docID,FetchedDoc fetchedDoc) throws Exception
+	public  void Process(long docID, FetchedDoc fetchedDoc) throws Exception
 	{
 		LinkedList<String> links = new LinkedList<String>();
-		Page page = new Page(fetchedDoc.memoryStream,fetchedDoc.encoding);
+		
+		Page page = new Page(fetchedDoc.getMemoryStream(),fetchedDoc.getEncoding());
 		Lexer lexer = new Lexer(page);
 		while(true)
 		{
+		
 			Node node = lexer.nextNode();
 			if(node == null)
 			{
@@ -40,26 +49,36 @@ public class LinkExtractor
 			if(node instanceof TagNode)
 			{
 				TagNode tagNode = (TagNode)node;
+				
 				if(tagNode.getTagName().equals("A"))
 				{
 					String href = tagNode.getAttribute("href");
 					if(href != null)
 					{
-						String absUrl = AbsUrlConstructor.construct(fetchedDoc.urlString, href);
+				
+						String absUrl = AbsUrlConstructor.construct(fetchedDoc.getUrlString(), href);
 						Crawler.urlFilter.Process(absUrl);
 						links.add(absUrl);
 					}
 				}
+				
+					// <span class="highlight2"></span>
+					// Location, Things I Love (links), My Hometown, The Last Great Book I Read, My First Concert, My Favorite Movie
+				
 			}
+			// Include other attributes that the algorithm will be analyzing
+			// May include: Hometown, Current Location, Interests, Favorite Movie, etc.
+			
+			
 		}
 	//	if(links.size()>0)
-			docToLinksMappingDb.add(docID, links);
-		fetchedDoc.memoryStream.close();
+		docToLinksMappingDb.put(docID, links);
+		fetchedDoc.getMemoryStream().close();
 	}
-	public void close() throws DatabaseException 
+/*	public void close() throws DatabaseException 
 	{
 		this.docToLinksMappingDb.closeDatabase();
 		this.docToLinksMappingDb.closeEnv();
-	}
+	}*/
 
 }
