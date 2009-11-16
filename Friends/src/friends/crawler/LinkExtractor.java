@@ -21,7 +21,7 @@ import friends.crawler.*;
 public class LinkExtractor 
 {
 	//private int crawlerID;
-	private Map<Long, LinkedList<String>> docToLinksMappingDb;
+	public Map<Long, LinkedList<String>> docToLinksMappingDb;
 	
 	public LinkExtractor(int crawlerID) throws Exception
 	{
@@ -75,10 +75,10 @@ public class LinkExtractor
 		docToLinksMappingDb.put(docID, links);
 		fetchedDoc.getMemoryStream().close();
 	}
-/*	public void close() throws DatabaseException 
+	public void close() //throws DatabaseException 
 	{
-		this.docToLinksMappingDb.closeDatabase();
-		this.docToLinksMappingDb.closeEnv();
-	}*/
+		// this.docToLinksMappingDb.closeDatabase();
+		//this.docToLinksMappingDb.closeEnv();
+	}
 
 }
