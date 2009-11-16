@@ -22,7 +22,7 @@ public class Crawler
 	
 	static StoreChannel storeChannel = new StoreChannel();
 	static LinkExtractor linkExtractor;
-	static UrlFilter urlFilter = new UrlFilter();
+	public static UrlFilter urlFilter = new UrlFilter();
 	static DistributeChannel distributeChannel = new DistributeChannel();
 	static UrlDispatcher urlDispatcher ;
 	static int dispatcherMessageSize = 200;

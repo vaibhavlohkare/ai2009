@@ -2,7 +2,7 @@ package friends.crawler;
 
 public class AbsUrlConstructor 
 {
-	static String construct(String urlString, String href)
+	public static String construct(String urlString, String href)
 	{
 
 		String tempURL = href;
