@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
+import friends.datacollect.LinkExtractor;
 import friends.util.Config;
 
 
