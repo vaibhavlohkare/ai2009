@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import friends.crawler.CrawlerWorker;
 import friends.crawler.FetchedDoc;
-import friends.crawler.LinkExtractor;
 import friends.crawler.StreamFetcher;
+import friends.datacollect.LinkExtractor;
 
 public class LinkExtractorTest {
 
