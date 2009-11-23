@@ -89,7 +89,7 @@ public class StreamFetcher
 			int port = (url.getPort()==-1?80:url.getPort());
 			
 			
-			if(!url.getProtocol().equalsIgnoreCase("http"))//check the protocal
+			if(!url.getProtocol().startsWith("http"))//check the protocal
 					return null;
 			
 			InetSocketAddress localSocketAddr = new InetSocketAddress(33000+worker.ThreadID*10 + worker.rotatingCount	);

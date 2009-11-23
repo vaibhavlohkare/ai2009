@@ -4,8 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 //import myGoogle.Util.BerkeleyDBAccess;
-import java.lang.Object;
+//import java.lang.Object;
 
 import org.htmlparser.Node;
 import org.htmlparser.lexer.Lexer;
@@ -14,6 +18,9 @@ import org.htmlparser.nodes.TagNode;
 
 import friends.crawler.*;
 //import com.sleepycat.je.DatabaseException;
+import friends.database.Link;
+import com.mysql.jdbc.*;
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 
 
@@ -22,9 +29,10 @@ public class LinkExtractor
 {
 	//private int crawlerID;
 	public Map<Long, LinkedList<String>> docToLinksMappingDb;
-	
+
 	public LinkExtractor(int crawlerID) throws Exception
 	{
+		
 		//this.crawlerID = crawlerID;
 		docToLinksMappingDb = new HashMap<Long, LinkedList<String>>();
 		//TODO(alexis): Fill in database info
@@ -74,11 +82,42 @@ public class LinkExtractor
 	//	if(links.size()>0)
 		docToLinksMappingDb.put(docID, links);
 		fetchedDoc.getMemoryStream().close();
+		
+		updateDatabase(links);
+		
 	}
+	
+	public void updateDatabase(LinkedList<String> links)
+	{
+		
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("testdbproj", System.getProperties());
+		EntityManager em = factory.createEntityManager();
+	
+		for (int x = 0; x < links.size(); x++)
+		{
+			Link l = new Link();
+			l.setLink(links.get(x));
+		
+			try
+			{
+				em.getTransaction().begin();
+				em.persist(l);
+				em.getTransaction().commit();
+			}
+			catch (Exception e)
+			{
+				if (e instanceof MySQLIntegrityConstraintViolationException)
+				{
+					em.getTransaction().rollback();			
+				}
+			}
+		}
+		em.close();
+	}
+	
 	public void close() //throws DatabaseException 
 	{
 		// this.docToLinksMappingDb.closeDatabase();
 		//this.docToLinksMappingDb.closeEnv();
 	}
-
 }
