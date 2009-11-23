@@ -97,7 +97,7 @@ public class LinkExtractor
 		{
 			Link l = new Link();
 			l.setLink(links.get(x));
-		
+			
 			try
 			{
 				em.getTransaction().begin();
@@ -108,7 +108,7 @@ public class LinkExtractor
 			{
 				if (e instanceof MySQLIntegrityConstraintViolationException)
 				{
-					em.getTransaction().rollback();			
+					em.getTransaction().rollback();	
 				}
 			}
 		}
