@@ -1,6 +1,7 @@
 package tests;
 
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -30,12 +31,10 @@ public class LinkExtractorTest {
 	public void processTest() throws Exception {
 		
 		StreamFetcher sf = new StreamFetcher(new CrawlerWorker());
-		FetchedDoc doc = sf.Fetch("https://dl.dropbox.com/u/14862/test.html");
+		FetchedDoc doc = sf.Fetch("http://www.yelp.com/user_details?userid=ei8X5pyCur3d0CGb5EbnFA");
 		
 		LinkExtractor le = new LinkExtractor(1);
 		le.Process(2L, doc);
-		
-		//Assert.assertTrue(le.docToLinksMappingDb.get(2L).size() == 4);
 	}
 
 }
