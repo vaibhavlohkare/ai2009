@@ -1,5 +1,6 @@
 package friends.datacollect;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -8,20 +9,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-//import myGoogle.Util.BerkeleyDBAccess;
-//import java.lang.Object;
-
 import org.htmlparser.Node;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.lexer.Page;
 import org.htmlparser.nodes.TagNode;
 
 import friends.crawler.*;
-//import com.sleepycat.je.DatabaseException;
 import friends.database.Link;
 import com.mysql.jdbc.*;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
+import java.util.regex.*;
 
 
 
@@ -35,7 +33,7 @@ public class LinkExtractor
 		
 		//this.crawlerID = crawlerID;
 		docToLinksMappingDb = new HashMap<Long, LinkedList<String>>();
-		//TODO(alexis): Fill in database info
+		//TODO(Alexis): Fill in database info
 		//docToLinksMappingDb.createEnv("Data/LinkMapping"+crawlerID);
 		//docToLinksMappingDb.openDB("LinkMapping", false);
 	}
@@ -83,34 +81,39 @@ public class LinkExtractor
 		docToLinksMappingDb.put(docID, links);
 		fetchedDoc.getMemoryStream().close();
 		
-		updateDatabase(links);
+		UpdateDatabase(links);
 		
 	}
 	
-	public void updateDatabase(LinkedList<String> links)
+	public void UpdateDatabase(LinkedList<String> links)
 	{
 		
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("testdbproj", System.getProperties());
 		EntityManager em = factory.createEntityManager();
 	
+		Pattern pat = Pattern.compile("^(http://www.yelp.com/user_details\\?)(\\S)*");
 		for (int x = 0; x < links.size(); x++)
 		{
 			Link l = new Link();
-			l.setLink(links.get(x));
-			
-			try
+			if(pat.matcher(links.get(x)).matches())
 			{
-				em.getTransaction().begin();
-				em.persist(l);
-				em.getTransaction().commit();
-			}
-			catch (Exception e)
-			{
-				if (e instanceof MySQLIntegrityConstraintViolationException)
+				l.setLink(links.get(x));
+				
+				try
 				{
-					em.getTransaction().rollback();	
+					em.getTransaction().begin();
+					em.persist(l);
+					em.getTransaction().commit();
+				}
+				catch (Exception e)
+				{
+					if (e instanceof MySQLIntegrityConstraintViolationException)
+					{
+						em.getTransaction().rollback();	
+					}
 				}
 			}
+			
 		}
 		em.close();
 	}
