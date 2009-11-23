@@ -14,33 +14,35 @@ public class Review implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	private int reviewID;
+	
 	private int linkID;
-
-	private int reviewerID;
 
 	private String reviewRatings;
 
 	private String reviews;
 
-	private int userID;
+	private String userID;
 
     public Review() {
     }
 
+    
+    public int getReviewID() {
+		return this.reviewID;
+	}
+
+	public void setReviewID(int reviewID) {
+		this.reviewID = reviewID;
+	}
+    
 	public int getLinkID() {
 		return this.linkID;
 	}
 
 	public void setLinkID(int linkID) {
 		this.linkID = linkID;
-	}
-
-	public int getReviewerID() {
-		return this.reviewerID;
-	}
-
-	public void setReviewerID(int reviewerID) {
-		this.reviewerID = reviewerID;
 	}
 
 	public String getReviewRatings() {
@@ -59,12 +61,12 @@ public class Review implements Serializable {
 		this.reviews = reviews;
 	}
 
-	public int getUserID() {
+	public String getUserID() {
 		return this.userID;
 	}
 
-	public void setUserID(int userID) {
-		this.userID = userID;
+	public void setUserID(String userID2) {
+		this.userID = userID2;
 	}
 
 }
