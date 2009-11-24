@@ -91,7 +91,7 @@ public class StreamFetcher
 			
 			if(!url.getProtocol().startsWith("http"))//check the protocal
 					return null;
-			
+
 			InetSocketAddress localSocketAddr = new InetSocketAddress(33000+worker.ThreadID*10 + worker.rotatingCount	);
 			
 			InetSocketAddress remoteSocketAddress = null;
@@ -136,11 +136,11 @@ public class StreamFetcher
 			else
 			{
 				byte[] body;
-				if(contentLength > MAX_PAGE_SIZE)
-				{
-					return null;
-				}
-				else if(contentLength > 0)
+				//if(contentLength > MAX_PAGE_SIZE)
+			//	{
+				//	return null;
+				//}
+			  if(contentLength > 0)
 				{
 					body = new byte[contentLength];
 					 dataInputStream.readFully(body);
