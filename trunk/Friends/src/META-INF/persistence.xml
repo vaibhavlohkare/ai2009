@@ -5,6 +5,7 @@
 	<persistence-unit name="testdbproj">
 		<class>friends.database.Link</class>
 		<class>friends.database.Review</class>
+		<class>friends.database.Friends</class>
 		<properties>
 			<property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver" />
 			<property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost/AIFriends" />
