@@ -55,7 +55,39 @@ public class ExploreReviews {
 	public void getCompanionReviews(String userName)
 	{
 		ResultSet set = getReviewData(userName);
-		
+		int reviewId = 0;
+		try
+		{
+			while (set.next()) {
+				try
+				{
+					// retrieve the values for the current row
+					 reviewId = set.getInt("reviewId");
+					int rating = set.getInt("rating");
+				}
+				catch(Exception ex)
+				{
+					
+				}
+				//now with the review id obtained find all the users 
+				//who commented on the same review and their rating
+				String sqlQuery = "select * from reviewToUserMap where review_Id="+reviewId;
+				ResultSet competingReview = null;
+				try
+				{
+					competingReview = dbSt.executeQuery(sqlQuery);
+				}
+				catch(Exception ex)
+				{
+					
+				}
+				
+			}
+		}
+		catch(Exception ex)
+		{
+			
+		}
 		
 	}
 
