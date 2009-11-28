@@ -1,7 +1,6 @@
 package friends.crawler;
 
 import friends.util.SHA1;
-import friends.common.StoreQueryResponseMessage;
 
 public class CrawlerWorker implements Runnable
 {	
@@ -20,6 +19,10 @@ public class CrawlerWorker implements Runnable
 			try
 			{
 				urlString = Crawler.urlFrontier.get(ThreadID);
+				if(Crawler.showLog)
+				{
+					System.out.println("get and ready to work on url: " + urlString);
+				}
 			}
 			catch(InterruptedException e)
 			{
@@ -42,8 +45,8 @@ public class CrawlerWorker implements Runnable
 			return;
 		try
 		{		
-			if(!robotChecker.process(urlString))
-				return;
+//			if(!robotChecker.process(urlString))
+//				return;
 			
 			FetchedDoc doc = fetcher.Fetch(urlString);
 			
@@ -63,10 +66,14 @@ public class CrawlerWorker implements Runnable
 				System.out.println("Downloading: " + urlString +" ...done");
 			}
 			
-			StoreQueryResponseMessage rm = Crawler.storeChannel.storeDocument(doc);
-
-			Crawler.due.put(new SHA1(rm.url), rm.docID);
-			if(!rm.isExist)
+			
+			//StoreQueryResponseMessage rm = Crawler.storeChannel.storeDocument(doc);
+			//Crawler.due.put(new SHA1(rm.url), rm.docID);
+			
+			System.out.printf("@@@ Get doc at url: %s", doc.getUrlString());
+			SHA1 pageHash = new SHA1(doc.data);
+			SHA1 urlHash = new SHA1(urlString);
+			if(!Crawler.due.docExist(urlHash, pageHash)) // (!rm.isExist)
 			{
 //				if(Crawler.showLog)
 //					System.out.println();
@@ -74,7 +81,10 @@ public class CrawlerWorker implements Runnable
 //				{
 //					System.err.println(doc.urlString);
 //				}
-				Crawler.linkExtractor.Process(rm.docID,doc);
+				Crawler.due.put(urlHash, pageHash);
+				
+				//Crawler.linkExtractor.Process(rm.docID,doc);
+				Crawler.linkExtractor.Process(doc);
 				Crawler.statistics.increaseHtmlNumber();
 			}
 			else

@@ -3,14 +3,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
-import friends.datacollect.LinkExtractor;
+//import friends.datacollect.LinkExtractor;
 import friends.util.Config;
 
 
 public class Crawler 
 {
 	static boolean shutDown = false;
-	static int MAXTHREADNUM = 20;
+	static int MAXTHREADNUM = 2; // 20
 	static Vector<Thread> threads= new Vector<Thread>(MAXTHREADNUM);
 	static Thread dispatcherThread;
 	static CrawlerStatistics statistics= new CrawlerStatistics();
@@ -21,10 +21,10 @@ public class Crawler
 	static DupUrlEliminator due ;
 	static UrlFrontier urlFrontier;
 	
-	static StoreChannel storeChannel = new StoreChannel();
+//	static StoreChannel storeChannel = new StoreChannel();
 	static LinkExtractor linkExtractor;
 	public static UrlFilter urlFilter = new UrlFilter();
-	static DistributeChannel distributeChannel = new DistributeChannel();
+//	static DistributeChannel distributeChannel = new DistributeChannel();
 	static UrlDispatcher urlDispatcher ;
 	static int dispatcherMessageSize = 200;
 	
@@ -132,7 +132,7 @@ public class Crawler
 					}
 				}
 			}
-			config = new Config("myGoogle.cfg");
+			config = new Config("friends.cfg");
 			
 			hostName = config.get("StoreCoordinatorAddress");
 			if(hostName == null)
@@ -144,7 +144,7 @@ public class Crawler
 			
 			startUrl = config.get("starturl");
 			if(startUrl == null)
-				startUrl = "http://www.seas.upenn.edu/";
+				startUrl = "http://www.yelp.com/";
 
 
 			due  = new DupUrlEliminator("Data/UrlResolver"+id+"/urlDB",10000);
@@ -152,15 +152,15 @@ public class Crawler
 			linkExtractor = new LinkExtractor(id);
 			urlDispatcher = new UrlDispatcher(Crawler.totalCrawler);
 
-			System.out.println("Joining Storage network...");
-			storeChannel.joinNetwork(hostName, 10000, 30000+id, "store");
-			storeChannel.hideMessageInfo();
-			
-			System.out.println();
-			System.out.println("Joining  URL distribution network...");
-			distributeChannel.setNodeIdInfo(totalCrawler, id);
-			distributeChannel.joinNetwork(hostName, 32000, 32000+id, "crawl");
-			distributeChannel.hideMessageInfo();
+//			System.out.println("Joining Storage network...");
+//			storeChannel.joinNetwork(hostName, 10000, 30000+id, "store");
+//			storeChannel.hideMessageInfo();
+//			
+//			System.out.println();
+//			System.out.println("Joining  URL distribution network...");
+//			distributeChannel.setNodeIdInfo(totalCrawler, id);
+//			distributeChannel.joinNetwork(hostName, 32000, 32000+id, "crawl");
+//			distributeChannel.hideMessageInfo();
 			
 			
 			
@@ -238,8 +238,8 @@ public class Crawler
 		}
 		
 		System.out.println("Leaving Pastry Network...");
-		Crawler.distributeChannel.close();
-		Crawler.storeChannel.close();
+//		Crawler.distributeChannel.close();
+//		Crawler.storeChannel.close();
 		
 		System.out.println("Closing databases...");
 		try
