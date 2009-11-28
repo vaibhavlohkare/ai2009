@@ -21,10 +21,8 @@ public class Crawler
 	static DupUrlEliminator due ;
 	static UrlFrontier urlFrontier;
 	
-//	static StoreChannel storeChannel = new StoreChannel();
 	static LinkExtractor linkExtractor;
 	public static UrlFilter urlFilter = new UrlFilter();
-//	static DistributeChannel distributeChannel = new DistributeChannel();
 	static UrlDispatcher urlDispatcher ;
 	static int dispatcherMessageSize = 200;
 	
@@ -151,18 +149,6 @@ public class Crawler
 			urlFrontier = new UrlFrontier(id,Crawler.MAXTHREADNUM);
 			linkExtractor = new LinkExtractor(id);
 			urlDispatcher = new UrlDispatcher(Crawler.totalCrawler);
-
-//			System.out.println("Joining Storage network...");
-//			storeChannel.joinNetwork(hostName, 10000, 30000+id, "store");
-//			storeChannel.hideMessageInfo();
-//			
-//			System.out.println();
-//			System.out.println("Joining  URL distribution network...");
-//			distributeChannel.setNodeIdInfo(totalCrawler, id);
-//			distributeChannel.joinNetwork(hostName, 32000, 32000+id, "crawl");
-//			distributeChannel.hideMessageInfo();
-			
-			
 			
 //			Starting interative menu
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -238,8 +224,6 @@ public class Crawler
 		}
 		
 		System.out.println("Leaving Pastry Network...");
-//		Crawler.distributeChannel.close();
-//		Crawler.storeChannel.close();
 		
 		System.out.println("Closing databases...");
 		try
