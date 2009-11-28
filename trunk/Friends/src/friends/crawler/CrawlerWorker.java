@@ -21,7 +21,7 @@ public class CrawlerWorker implements Runnable
 				urlString = Crawler.urlFrontier.get(ThreadID);
 				if(Crawler.showLog)
 				{
-					System.out.println("get and ready to work on url: " + urlString);
+					System.out.println("@@@ get and ready to work on url: " + urlString);
 				}
 			}
 			catch(InterruptedException e)
@@ -66,9 +66,6 @@ public class CrawlerWorker implements Runnable
 				System.out.println("Downloading: " + urlString +" ...done");
 			}
 			
-			
-			//StoreQueryResponseMessage rm = Crawler.storeChannel.storeDocument(doc);
-			//Crawler.due.put(new SHA1(rm.url), rm.docID);
 			
 			System.out.printf("@@@ Get doc at url: %s", doc.getUrlString());
 			SHA1 pageHash = new SHA1(doc.data);
