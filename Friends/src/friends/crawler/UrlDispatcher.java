@@ -1,13 +1,20 @@
 package friends.crawler;
 
-import friends.common.UrlDistibutionMessage;
-import friends.distributed.ConstantNodeIdFactory;
-import rice.p2p.commonapi.Id;
+//import friends.common.UrlDistibutionMessage;
+import friends.common.UrlsDistributedMessage;
+//import friends.distributed.ConstantNodeIdFactory;
+//import rice.p2p.commonapi.Id;
 
 public class UrlDispatcher implements Runnable
 {
-	private UrlDistibutionMessage[] messages;
-	private Id[] crawlerNodeIds;
+	/***********************
+	 * This class works as the buffer to dispatch url links
+	 */
+	
+	
+	//	private UrlDistibutionMessage[] messages;
+	private UrlsDistributedMessage[] channels;
+//	private Id[] crawlerNodeIds;
 	private int totalCrawler;
 
 	
@@ -15,31 +22,55 @@ public class UrlDispatcher implements Runnable
 	{
 		this.totalCrawler = totalCrawler;
 
-		crawlerNodeIds = new Id[totalCrawler];
-		messages = new UrlDistibutionMessage[totalCrawler];
-		for(int i = 0;i< totalCrawler;i++)
+		channels = new UrlsDistributedMessage[totalCrawler];
+		for (int i = 0; i < totalCrawler; i++)
 		{
-			crawlerNodeIds[i] = ConstantNodeIdFactory.generateNodeId(totalCrawler, i);
-			messages[i] = new UrlDistibutionMessage();
+			channels[i] = new UrlsDistributedMessage();
 		}
+//		crawlerNodeIds = new Id[totalCrawler];
+//		messages = new UrlDistibutionMessage[totalCrawler];
+//		for(int i = 0;i< totalCrawler;i++)
+//		{
+//			crawlerNodeIds[i] = ConstantNodeIdFactory.generateNodeId(totalCrawler, i);
+//			messages[i] = new UrlDistibutionMessage();
+//		}
 	}
 	
 	public void flush()
 	{
-		for(int i = 0;i< totalCrawler;i++)
+		for(int crawlerIndex = 0;crawlerIndex< totalCrawler;crawlerIndex++)
 		{
-			if(messages[i].urls.size() > 0)
+//			if(messages[i].urls.size() > 0)
+//			{
+//				Crawler.distributeChannel.sendMessage(crawlerNodeIds[i], messages[i]);
+//				messages[i] = new UrlDistibutionMessage();
+//			}
+			int urlsSize = channels[crawlerIndex].urls.size();
+			if(urlsSize > 0)
 			{
-				Crawler.distributeChannel.sendMessage(crawlerNodeIds[i], messages[i]);
-				messages[i] = new UrlDistibutionMessage();
+				for(int messageIndex = 0;messageIndex<urlsSize;messageIndex++)
+				{
+					if (Crawler.showLog)
+					{
+						System.out.printf("@@@ UrlDispatcher: dispatch url: %s\n", 
+								channels[crawlerIndex].urls.elementAt(messageIndex));
+					}
+					Crawler.due.process(channels[crawlerIndex].urls.elementAt(messageIndex));
+					
+				}
+				channels[crawlerIndex].urls.clear(); 
 			}
 		}
 	}
 	
 	public void process(String host,String urlString)
 	{
+		if (Crawler.showLog)
+		{
+			System.out.printf("@@@ UrlDispatcher: add url: %s\n, host: %s\n", urlString,host);
+		}
 		int i = (host.hashCode() % totalCrawler + totalCrawler)% totalCrawler;
-		messages[i].addUrl(urlString);
+		channels[i].addUrl(urlString);
 	}
 
 	public void run()

@@ -69,6 +69,10 @@ public class UrlFrontier
 			LinkedBlockingQueue<String> queue = urlQueues.get(queueNumber);
 			queue.put(urlString);
 			totalQueueSize ++;
+			if (Crawler.showLog)
+			{
+				System.out.printf("@@@ UrlFrontier: put url to blocked queue: %s\n", urlString);
+			}
 		}
 		catch (Exception  e)
 		{
