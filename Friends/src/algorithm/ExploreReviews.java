@@ -65,7 +65,7 @@ public class ExploreReviews {
 				try
 				{
 					// retrieve the values for the current row
-					 reviewId = set.getInt("reviewId");
+					 reviewId = set.getInt("business_Id");
 					 currentRating = set.getInt("rating");
 				}
 				catch(Exception ex)
@@ -74,7 +74,7 @@ public class ExploreReviews {
 				}
 				//now with the review id obtained find all the users 
 				//who commented on the same review and their rating
-				String sqlQuery = "select * from reviewToUserMap where review_Id="+reviewId;
+				String sqlQuery = "select * from reviews_table where business_Id="+reviewId;
 				ResultSet competingReview = null;
 				try
 				{
@@ -143,8 +143,9 @@ public class ExploreReviews {
 	
 	public void runRecommendationAlgorithm()
 	{
-		String sqlQuery = "select * from list_users";
+		String sqlQuery = "select * from user_friend_table";
 		ResultSet businessReviews = null;
+		boolean doOnce = false;
 		try
 		{
 			businessReviews = dbSt.executeQuery(sqlQuery);
@@ -152,11 +153,24 @@ public class ExploreReviews {
 			{
 				
 				String userName = businessReviews.getString("userName");
+				if(!users.contains(userName))
+				{
+					users.add(userName);
+					getCompanionReviews(userName);
+				}
 				//each friend is sepearted by a colon
-				String friendList = businessReviews.getString("friendList");
-				getCompanionReviews(userName);
-				users.add(userName);
-				friendMap.put(userName,friendList);
+				String friendName = businessReviews.getString("friendName");
+				if(friendMap.containsKey(userName))
+				{
+					Vector<String> friendList = friendMap.get(userName);
+					friendList.add(friendName);
+				}
+				else
+				{
+					Vector<String> friendList = new Vector<String>();
+					friendMap.put(userName,friendList);
+				}
+				
 			}
 		}
 		catch(Exception ex)
@@ -175,9 +189,15 @@ public class ExploreReviews {
 					double rating = userListRating.get(key);
 					double count = (double)userListCount.get(key);
 					double connection = 1- (rating / count);
-					if( connection > 0.8 )
+					//right now I am saying 80% chance we can tweak this number
+					if( connection > 0.8 )  
 					{
-					   System.out.println("User is more likely to be friends with "+getSecondUser(key));	
+					   System.out.println("User is more likely to be friends with "+getSecondUser(key));
+					   Vector friendList = friendMap.get(userName);
+					   if (friendList.contains(getSecondUser(key)))
+					   {
+						  System.out.println("User is already friend with recommended user. !!"); 
+					   }
 					}
 			    }
 			}
@@ -195,5 +215,5 @@ public class ExploreReviews {
 	HashMap<String,Double> userListRating = new HashMap<String,Double>();
 	HashMap<String,Integer> userListCount = new HashMap<String,Integer>();
     Vector<String> users = new Vector<String>();
-    HashMap<String,String> friendMap = new HashMap<String,String>();
+    HashMap<String,Vector<String>> friendMap = new HashMap<String,Vector<String>>();
 }
