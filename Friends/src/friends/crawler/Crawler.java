@@ -16,6 +16,7 @@ public class Crawler
 	static CrawlerStatistics statistics= new CrawlerStatistics();
 	static double maxVolume = -1;
 	static boolean showLog = true;
+	static boolean crawlOnePage = false;
 	static long startTime ;
 	
 	static DupUrlEliminator due ;
@@ -97,8 +98,8 @@ public class Crawler
 			
 			startTime = System.currentTimeMillis();
 			
-			if(!urlFrontier.loaded)
-				urlFilter.Process(startUrl);
+//			if(!urlFrontier.loaded)
+//				urlFilter.Process(startUrl);
 		}
 	}
 	public static void main(String[] args) 
@@ -157,7 +158,7 @@ public class Crawler
 			{
 				while( true)
 				{
-					System.out.print("\nControl Panel:\n1)Start\n2)Toggle Log\n3)Print State\n4)Exit\n");
+					System.out.print("\nControl Panel:\n1)Start\n2)Toggle Log\n3)Print State\n4)Insert url\n5)Toggle One Page Crawling\n0)Exit\n");
 					input = reader.readLine();
 					
 					if (input.equals("1"))
@@ -173,6 +174,26 @@ public class Crawler
 						printState();
 					}
 					else if(input.equals("4"))
+					{
+						if (started)
+						{
+							System.out.println("One page crawling is on? "+crawlOnePage);
+							System.out.println("Insert an url:");
+							String insertedUrl = reader.readLine();
+							Crawler.urlFrontier.put(insertedUrl);
+							//urlFilter.Process(insertedUrl);
+						}
+						else
+						{
+							System.out.println("Crawler has to be started first");
+						}
+					}
+					else if(input.equals("5"))
+					{
+						crawlOnePage = !crawlOnePage;
+						System.out.println("Toggle One Page Crawling: "+crawlOnePage);
+					}
+					else if(input.equals("0"))
 					{
 						ShutDown();
 						return;
@@ -194,36 +215,35 @@ public class Crawler
 	{
 		System.out.println("Shutting down...");
 		Crawler.shutDown = true;
-		try
+		if (started)
 		{
-			Thread.sleep(1000);
-			dispatcherThread.join(1000);
-		}
-		catch (InterruptedException e1)
-		{
-			e1.printStackTrace();
-		}
-		
-		printState();
-		
-		
-		System.out.println("Shutting down threads...");
-		for(int i =0;i<Crawler.MAXTHREADNUM;i++)
-		{
-			Thread thread = Crawler.threads.get(i);
-			if(thread == null)
-				break;
 			try
 			{
-				Crawler.threads.get(i).join(500);
+				Thread.sleep(1000);
+				dispatcherThread.join(1000);
 			}
-			catch (InterruptedException e)
+			catch (InterruptedException e1)
 			{
-				e.printStackTrace();
+				e1.printStackTrace();
+			}
+
+			System.out.println("Shutting down threads...");
+			for(int i =0;i<Crawler.MAXTHREADNUM;i++)
+			{
+				Thread thread = Crawler.threads.get(i);
+				if(thread == null)
+					break;
+				try
+				{
+					Crawler.threads.get(i).join(500);
+				}
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
-		
-		System.out.println("Leaving Pastry Network...");
+		printState();
 		
 		System.out.println("Closing databases...");
 		try
