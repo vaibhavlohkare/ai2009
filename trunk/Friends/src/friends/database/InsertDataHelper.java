@@ -15,8 +15,15 @@ public class InsertDataHelper {
 	private Statement dbSt=null;
 	public InsertDataHelper()
 	{
-		conn = GetConnection.getSimpleConnection();
-        dbSt = conn.createStatement();	
+		try{
+	
+			conn = GetConnection.getSimpleConnection();
+	        dbSt = conn.createStatement();
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 	public void insertReviewData(int rating, String userName, String businessName)
