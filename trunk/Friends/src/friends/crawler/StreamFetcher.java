@@ -101,6 +101,7 @@ public class StreamFetcher
 			}
 			catch(Exception e)
 			{
+				
 				return null;
 			}
 			
@@ -158,12 +159,8 @@ public class StreamFetcher
 				
 				if(body == null)
 					return null;
-//				FileOutputStream fo = new FileOutputStream("page.htm");
-//				PrintStream ps = new PrintStream(fo);
-//				ps.append(new String(body));
-//				ps.close();
-//				System.out.println("Len: "+body.length+"\n"+ new String(body));
 
+				
 				Crawler.statistics.increaseVolume(body.length);
 				if(!Crawler.shutDown && Crawler.maxVolume >0 & Crawler.statistics.getVolumeInBytes()>Crawler.maxVolume)
 				{
@@ -181,9 +178,9 @@ public class StreamFetcher
 		{
 			return null;
 		}
-		catch( Exception e)
+		catch(Exception e)
 		{
-	//			e.printStackTrace();
+			System.out.println("BLAH!");
 			return null;
 		}
 		finally

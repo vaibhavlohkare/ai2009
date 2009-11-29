@@ -35,7 +35,7 @@ public class FriendsExtractor {
 
 		List<Link> links = GetDatabaseLinks();
 
-		for (int i = 0; i < links.size(); i++) {
+		for (int i = 0; i < links.size()-1; i++) {
 			String dbLink = links.get(i).getLink();
 			StreamFetcher sf = new StreamFetcher(new CrawlerWorker());
 			FetchedDoc doc = sf.Fetch(dbLink);
@@ -164,25 +164,25 @@ public class FriendsExtractor {
 		
 		Friends f = new Friends();
 		
-		if (!userLink.equals(friendID) || userLink != null || friendID != null)
+		if (!userLink.matches(friendID) && userLink != null && friendID != null)
 		{
 			f.setUserID(userLink);
 			f.setFriendID(friendID);
+			try {
+				
+				em.getTransaction().begin();
+				em.persist(f);
+				em.getTransaction().commit();
+
+			} catch (Exception e) {
+			if (e instanceof MySQLIntegrityConstraintViolationException) {
+				em.getTransaction().rollback();
+				System.out.println("error.");
+			}
+			}
 		}
 		
-		try {
-			
-			em.getTransaction().begin();
-			em.persist(f);
-			System.out.println("was committed3.");
-			em.getTransaction().commit();
-
-		} catch (Exception e) {
-		if (e instanceof MySQLIntegrityConstraintViolationException) {
-			em.getTransaction().rollback();
-			System.out.println("error.");
-		}
-		}
+		
 		em.close();
 	}
 }

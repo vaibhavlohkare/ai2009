@@ -36,11 +36,10 @@ public class ReviewsExtractor {
 	}
 
 	public void Process() throws Exception {
-		// LinkedList<String> links = new LinkedList<String>();
 
 		List<Link> links = GetDatabaseLinks();
 
-		for (int i = 0; i < links.size(); i++) {
+		for (int i = 0; i < links.size()-1; i++) {
 			String dbLink = links.get(i).getLink();
 			StreamFetcher sf = new StreamFetcher(new CrawlerWorker());
 			FetchedDoc doc = sf.Fetch(dbLink);
@@ -170,15 +169,18 @@ public class ReviewsExtractor {
 		EntityManager em = factory.createEntityManager();
 
 		Review r = new Review();
-		r.setReviews(business);
-		r.setReviewRatings(rating);
-		r.setUserID(userID);
-		r.setLinkID(linkID);
-
+		if (r.getReviews() != " " || r.getReviewRatings() != " ")
+		{
+			r.setReviews(business);
+			r.setReviewRatings(rating);
+			r.setUserID(userID);
+			r.setLinkID(linkID);
+		}
 		try {
 				em.getTransaction().begin();
 				em.persist(r);
 				em.getTransaction().commit();
+			
 
 		} catch (Exception e) {
 			if (e instanceof MySQLIntegrityConstraintViolationException) {

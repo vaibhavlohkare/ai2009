@@ -1,5 +1,6 @@
 package friends.crawler;
 import java.io.BufferedReader;
+import friends.datacollect.*;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
