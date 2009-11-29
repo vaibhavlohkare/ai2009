@@ -44,6 +44,7 @@ public class InsertDataHelper {
 		try
 		{
 			dbSt.executeUpdate("INSERT INTO user_friend_table " + "VALUES ( "+"'"+ userName +"',"+"'" + friendName + "')");
+			userfriend_unique_id++;
 		}
 		catch(Exception ex)
 		{
