@@ -71,7 +71,7 @@ public class UrlFrontier
 			totalQueueSize ++;
 			if (Crawler.showLog)
 			{
-				System.out.printf("@@@ UrlFrontier: put url to blocked queue: %s\n", urlString);
+//				System.out.printf("@@@ UrlFrontier: put url to blocked queue: %s\n", urlString);
 			}
 		}
 		catch (Exception  e)

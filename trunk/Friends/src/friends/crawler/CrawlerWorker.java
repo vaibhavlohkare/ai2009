@@ -64,13 +64,13 @@ public class CrawlerWorker implements Runnable
 			if(Crawler.showLog)
 			{
 				System.out.println("Downloading: " + urlString +" ...done");
+				//System.out.print(new String(doc.data,"UTF-8"));
 			}
 			
-			
-			System.out.printf("@@@ Get doc at url: %s", doc.getUrlString());
 			SHA1 pageHash = new SHA1(doc.data);
 			SHA1 urlHash = new SHA1(urlString);
-			if(!Crawler.due.docExist(urlHash, pageHash)) // (!rm.isExist)
+			// not parse the page twice, unless we only crawl this page
+			if(!Crawler.due.docExist(urlHash, pageHash) || Crawler.crawlOnePage) // (!rm.isExist)
 			{
 //				if(Crawler.showLog)
 //					System.out.println();
@@ -78,9 +78,9 @@ public class CrawlerWorker implements Runnable
 //				{
 //					System.err.println(doc.urlString);
 //				}
+					
 				Crawler.due.put(urlHash, pageHash);
 				
-				//Crawler.linkExtractor.Process(rm.docID,doc);
 				Crawler.linkExtractor.Process(doc);
 				Crawler.statistics.increaseHtmlNumber();
 			}

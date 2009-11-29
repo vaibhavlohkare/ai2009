@@ -40,11 +40,6 @@ public class UrlDispatcher implements Runnable
 	{
 		for(int crawlerIndex = 0;crawlerIndex< totalCrawler;crawlerIndex++)
 		{
-//			if(messages[i].urls.size() > 0)
-//			{
-//				Crawler.distributeChannel.sendMessage(crawlerNodeIds[i], messages[i]);
-//				messages[i] = new UrlDistibutionMessage();
-//			}
 			int urlsSize = channels[crawlerIndex].urls.size();
 			if(urlsSize > 0)
 			{
@@ -52,7 +47,7 @@ public class UrlDispatcher implements Runnable
 				{
 					if (Crawler.showLog)
 					{
-						System.out.printf("@@@ UrlDispatcher: dispatch url: %s\n", 
+						System.out.printf("@@@ UrlDispatcher, dispatch url: %s\n", 
 								channels[crawlerIndex].urls.elementAt(messageIndex));
 					}
 					Crawler.due.process(channels[crawlerIndex].urls.elementAt(messageIndex));
@@ -65,10 +60,6 @@ public class UrlDispatcher implements Runnable
 	
 	public void process(String host,String urlString)
 	{
-		if (Crawler.showLog)
-		{
-			System.out.printf("@@@ UrlDispatcher: add url: %s\n, host: %s\n", urlString,host);
-		}
 		int i = (host.hashCode() % totalCrawler + totalCrawler)% totalCrawler;
 		channels[i].addUrl(urlString);
 	}
