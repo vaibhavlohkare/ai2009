@@ -1,11 +1,12 @@
 package friends.crawler;
+import friends.crawler.Robot;
 
 import friends.util.SHA1;
 
 public class CrawlerWorker implements Runnable
 {	
 	StreamFetcher fetcher = new StreamFetcher(this);
-	RobotChecker robotChecker = new RobotChecker();
+	//Robot robotChecker = new Robot();
 	Thread thread;
 	int ThreadID;
 	int rotatingCount = 0;
@@ -81,7 +82,7 @@ public class CrawlerWorker implements Runnable
 					
 				Crawler.due.put(urlHash, pageHash);
 				
-				Crawler.linkExtractor.Process(doc);
+				Crawler.linkExtractor.Process(2L,doc);
 				Crawler.statistics.increaseHtmlNumber();
 			}
 			else
