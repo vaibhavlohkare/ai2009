@@ -11,7 +11,7 @@ import friends.util.Config;
 public class Crawler 
 {
 	static boolean shutDown = false;
-	static int MAXTHREADNUM = 1; // 20
+	static int MAXTHREADNUM = 5; // 20
 	static Vector<Thread> threads= new Vector<Thread>(MAXTHREADNUM);
 	static Thread dispatcherThread;
 	static CrawlerStatistics statistics= new CrawlerStatistics();

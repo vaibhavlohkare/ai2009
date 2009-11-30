@@ -82,7 +82,7 @@ public class CrawlerWorker implements Runnable
 					
 				Crawler.due.put(urlHash, pageHash);
 				
-				Crawler.linkExtractor.Process(2L,doc);
+				Crawler.linkExtractor.Process(doc);
 				Crawler.statistics.increaseHtmlNumber();
 			}
 			else
