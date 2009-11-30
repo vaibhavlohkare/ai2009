@@ -1,4 +1,3 @@
-package algorithm;
 
 
 import java.sql.Connection;
@@ -38,13 +37,13 @@ public class ExploreReviews {
 			ex.printStackTrace();
 		}
 		finally{
-			try{
+			//try{
 
-				  dbRs.close();
-			}
-			catch(Exception ex){
-			      ex.printStackTrace();
-			}
+				  //dbRs.close();
+			//}
+			//catch(Exception ex){
+			 //     ex.printStackTrace();
+			//}
 		}
 		return dbRs;
 	}
@@ -56,27 +55,29 @@ public class ExploreReviews {
 	//users 
 	public void getCompanionReviews(String userName)
 	{
-		ResultSet set = getReviewData(userName);
-		
+		//ResultSet set = getReviewData(userName);
+		ResultSet competingReview = null;
 		int currentRating= 0;
-		int reviewId=0;
-		try
-		{
-			while (set.next()) {
-				try
-				{
+		String reviewId=null;
+		//try
+		//{
+			//while (set.next()) {
+			//	try
+			//	{
 					// retrieve the values for the current row
-					 reviewId = set.getInt("business_Id");
-					 currentRating = set.getInt("rating");
-				}
-				catch(Exception ex)
-				{
-					ex.printStackTrace();
-				}
+			//		 reviewId = set.getString("business");
+			//		 currentRating = set.getInt("rating");
+			//		 System.out.println("business and review "+reviewId+ " "+currentRating);
+			//	}
+			//	catch(Exception ex)
+			//	{
+			//		ex.printStackTrace();
+			//	}
 				//now with the review id obtained find all the users 
 				//who commented on the same review and their rating
-				String sqlQuery = "select * from reviews_table where business_Id="+reviewId;
-				ResultSet competingReview = null;
+				//String sqlQuery = "select * from reviews_table where business='"+reviewId+"'";
+			      String sqlQuery = "select * from reviews_table where business in (select business from reviews_table where username='"+userName+"')";
+				
 				try
 				{
 					competingReview = dbSt.executeQuery(sqlQuery);
@@ -87,8 +88,10 @@ public class ExploreReviews {
 					while( competingReview.next())
 					{
 						String competingUserName = competingReview.getString("username");
+						
 						if(!competingUserName.equals(userName))
 						{
+							System.out.println("competing user name "+competingUserName);
 							int competingRating = competingReview.getInt("rating");
 							double dRating = convertRatingToFloat(competingRating);
 							String user1User2 = competingUserName+":"+userName;
@@ -111,14 +114,24 @@ public class ExploreReviews {
 				}
 				catch(Exception ex)
 				{
+					System.out.println("Failed to execute the competing review query");
 					ex.printStackTrace();
 				}
 				
-			}
-		}
-		catch(Exception ex)
+			//}
+		//}
+		//catch(Exception ex)
+		//{
+			//ex.printStackTrace();
+		//}
+		finally
 		{
-			ex.printStackTrace();
+			try
+			{
+			//set.close();
+			competingReview.close();
+			}
+			catch(Exception ex){}
 		}
 		
 	}
@@ -153,14 +166,15 @@ public class ExploreReviews {
 			while(businessReviews.next())
 			{
 				
+				String friendName = businessReviews.getString("friendName");
 				String userName = businessReviews.getString("userName");
 				if(!users.contains(userName))
 				{
 					users.add(userName);
-					getCompanionReviews(userName);
+					//getCompanionReviews(userName);
 				}
 				//each friend is sepearted by a colon
-				String friendName = businessReviews.getString("friendName");
+				
 				if(friendMap.containsKey(userName))
 				{
 					Vector<String> friendList = friendMap.get(userName);
@@ -182,6 +196,7 @@ public class ExploreReviews {
 		for(int i=0; i < users.size(); ++i)
 		{
 			String userName = users.get(i);
+			getCompanionReviews(userName);
 			Iterator it = (Iterator) userListRating.keySet().iterator();
 			while(it.hasNext()) {	
 				String key = (String)it.next();
@@ -190,6 +205,7 @@ public class ExploreReviews {
 					double rating = userListRating.get(key);
 					double count = (double)userListCount.get(key);
 					double connection = 1- (rating / count);
+					System.out.println("conection between user1 "+userName+" user2 "+getSecondUser(key)+ " connection "+connection);
 					//right now I am saying 80% chance we can tweak this number
 					if( connection > 0.8 )  
 					{
@@ -209,18 +225,20 @@ public class ExploreReviews {
 	public String getSecondUser(String user1User2)
 	{
 		int index = user1User2.indexOf(':');
-		String user2 = user1User2.substring(index,user1User2.length());
+		String user2 = user1User2.substring(index+1,user1User2.length());
 		return user2;
 	}
+	
+	 public static void main(String [] args)
+	 {
+	         ExploreReviews review = new ExploreReviews();
+	         review.runRecommendationAlgorithm();	         
+	 }
 	
 	HashMap<String,Double> userListRating = new HashMap<String,Double>();
 	HashMap<String,Integer> userListCount = new HashMap<String,Integer>();
     Vector<String> users = new Vector<String>();
     HashMap<String,Vector<String>> friendMap = new HashMap<String,Vector<String>>();
     
-	public static void main(String[] args) throws Exception
-	{
-		ExploreReviews er = new ExploreReviews();
-		er.runRecommendationAlgorithm();
-	}
+   
 }
