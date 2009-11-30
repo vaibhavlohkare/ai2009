@@ -43,7 +43,10 @@ public class ReviewsExtractor {
 			String dbLink = links.get(i).getLink();
 			StreamFetcher sf = new StreamFetcher(new CrawlerWorker());
 			FetchedDoc doc = sf.Fetch(dbLink);
-			ExtractReviews(doc, links.get(i).getLinkID());
+			if (doc != null)
+			{
+				ExtractReviews(doc, links.get(i).getLinkID());
+			}
 		}
 	}
 
@@ -169,14 +172,12 @@ public class ReviewsExtractor {
 		EntityManager em = factory.createEntityManager();
 
 		Review r = new Review();
-		if (r.getReviews() != " " || r.getReviewRatings() != " ")
-		{
-			r.setReviews(business);
-			r.setReviewRatings(rating);
-			r.setUserID(userID);
-			r.setLinkID(linkID);
-		}
+
 		try {
+				r.setReviews(business);
+				r.setReviewRatings(rating);
+				r.setUserID(userID);
+				r.setLinkID(linkID);
 				em.getTransaction().begin();
 				em.persist(r);
 				em.getTransaction().commit();

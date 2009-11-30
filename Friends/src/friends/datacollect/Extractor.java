@@ -49,7 +49,7 @@ public class Extractor {
 			re.Process();
 		}
 		
-		for (int x=0; x<friendsList.size(); x++)
+		/*for (int x=0; x<friendsList.size(); x++)
 		{
 			try{
 			StreamFetcher sf = new StreamFetcher(new CrawlerWorker());
@@ -57,20 +57,25 @@ public class Extractor {
 			FetchedDoc doc = sf.Fetch(dbLink);
 			
 			LinkExtractor le = new LinkExtractor(1);
-			le.Process(2L, doc);
-			
-			FriendsExtractor fe = new FriendsExtractor();
-			fe.Process();
+			le.Process(2L, doc);*/
+			try {
+				ReviewsExtractor re = new ReviewsExtractor();
+				re.Process();
+			}catch (NullPointerException ne)
+			{
 				
-			ReviewsExtractor re = new ReviewsExtractor();
-			re.Process();
+			}
+			
+			//FriendsExtractor fe = new FriendsExtractor();
+			//fe.Process();
+			/*	
 			}
 			catch (NullPointerException ne)
 			{
 				System.out.println("NullPointer");
-			}
+			}*/
 		}
 		
 	}
 
-}
+//}
