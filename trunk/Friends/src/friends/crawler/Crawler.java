@@ -11,7 +11,7 @@ import friends.util.Config;
 public class Crawler 
 {
 	static boolean shutDown = false;
-	static int MAXTHREADNUM = 2; // 20
+	static int MAXTHREADNUM = 1; // 20
 	static Vector<Thread> threads= new Vector<Thread>(MAXTHREADNUM);
 	static Thread dispatcherThread;
 	static CrawlerStatistics statistics= new CrawlerStatistics();
@@ -73,6 +73,12 @@ public class Crawler
 		System.out.println("Total Traffic: "+statistics.volumeCrawled);
 		System.out.println("Time elapsed: "+(System.currentTimeMillis() - Crawler.startTime)/1000 +" secs");
 	}
+	
+	public static void dispatchUrl(String absUrl)
+	{
+		if(!crawlOnePage) urlFilter.Process(absUrl);
+	}
+	
 	private static void start()
 	{
 		if(!started)
@@ -94,6 +100,7 @@ public class Crawler
 				thread.setDaemon(true);
 				thread.setName(String.valueOf(i));
 				thread.start();
+				System.out.println("run CrawlerWorker " + i);
 			}
 			
 			
@@ -176,18 +183,18 @@ public class Crawler
 					}
 					else if(input.equals("4"))
 					{
-						if (started)
+						if (!started)
 						{
-							System.out.println("One page crawling is on? "+crawlOnePage);
-							System.out.println("Insert an url:");
-							String insertedUrl = reader.readLine();
-							Crawler.urlFrontier.put(insertedUrl);
-							//urlFilter.Process(insertedUrl);
+							start();
+							System.out.println("Crawler has been started first");
 						}
-						else
-						{
-							System.out.println("Crawler has to be started first");
-						}
+						
+						System.out.println("One page crawling is on? "+crawlOnePage);
+						System.out.println("Insert an url:");
+						String insertedUrl = reader.readLine();
+						//Crawler.urlFrontier.put(insertedUrl);
+						urlFilter.Process(insertedUrl);
+						
 					}
 					else if(input.equals("5"))
 					{

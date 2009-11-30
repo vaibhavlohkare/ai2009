@@ -130,18 +130,18 @@ public class FriendsExtractor {
 					}
 				}
 			}
-	}
+		}
 		
 		String[] uID = link.split("=");
 		String userID = uID[1];
 		
 		for (int x = 0; x < links.size(); x++) {
-		String currentLink = links.get(x);
-		String[] currentLinkage = links.get(x).split("=");
-		String friendID = currentLinkage[1];
-		
-		UpdateDatabase(userID, friendID);
-	}
+			String currentLink = links.get(x);
+			String[] currentLinkage = links.get(x).split("=");
+			String friendID = currentLinkage[1];
+			
+			UpdateDatabase(userID, friendID);
+		}
 	}
 	
 	public FetchedDoc CrawlFriends(List<String> userFriendsList)

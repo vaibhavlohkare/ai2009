@@ -104,10 +104,10 @@ public class ReviewsExtractor {
 			String currentLink = links.get(x);
 			String[] currentLinkage = links.get(x).split("=");
 			String userID = currentLinkage[1];
-			StreamFetcher sf2 = new StreamFetcher(new CrawlerWorker());
-			FetchedDoc doc2 = sf2.Fetch(currentLink);
-			Page p2 = new Page(doc2.getMemoryStream(), doc2.getEncoding());
-			Lexer lexer2 = new Lexer(p2);
+//			StreamFetcher sf2 = new StreamFetcher(new CrawlerWorker());
+//			FetchedDoc doc2 = sf2.Fetch(currentLink);
+//			Page p2 = new Page(doc2.getMemoryStream(), doc2.getEncoding());
+//			Lexer lexer2 = new Lexer(p2);
 			String business = "";
 			while (true) {
 				Node node = lexer.nextNode();

@@ -1,5 +1,6 @@
 package friends.crawler;
 import java.net.*;
+import java.util.regex.Pattern;
 public class UrlFilter 
 {
 	public static final int  MAX_URL_LENGTH = 512;
@@ -31,12 +32,29 @@ public class UrlFilter
 					tempURL +="/";
 				}
 			}
-			
-			Crawler.urlDispatcher.process(url.getHost(),tempURL);
+			if (isAllowed(tempURL))
+			{
+				Crawler.urlDispatcher.process(url.getHost(),tempURL);
+			}
 		}
 		catch(Exception e)
 		{
 			
 		}
+	}
+	
+	private boolean isAllowed(String url)
+	{
+		Pattern p1 = Pattern.compile("^(http://www.yelp.com/user_details\\?)(\\S)*");
+		if (p1.matcher(url).matches()) 
+		{
+			return true;
+		}
+		Pattern p2 = Pattern.compile("^(http://www.yelp.com/user_details_friends\\?)(\\S)*");
+		if (p2.matcher(url).matches()) 
+		{
+			return true;
+		}
+		return false;
 	}
 }
