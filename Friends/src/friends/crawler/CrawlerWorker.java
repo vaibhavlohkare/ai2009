@@ -20,10 +20,10 @@ public class CrawlerWorker implements Runnable
 			try
 			{
 				urlString = Crawler.urlFrontier.get(ThreadID);
-				if(Crawler.showLog)
-				{
-					System.out.println("@@@ get and ready to work on url: " + urlString);
-				}
+//				if(Crawler.showLog)
+//				{
+//					System.out.println("@@@ get and ready to work on url: " + urlString);
+//				}
 			}
 			catch(InterruptedException e)
 			{
@@ -71,7 +71,7 @@ public class CrawlerWorker implements Runnable
 			SHA1 pageHash = new SHA1(doc.data);
 			SHA1 urlHash = new SHA1(urlString);
 			// not parse the page twice, unless we only crawl this page
-			if(!Crawler.due.docExist(urlHash, pageHash) || Crawler.crawlOnePage) // (!rm.isExist)
+			if(!Crawler.due.docExist(urlHash, pageHash)) // (!rm.isExist)
 			{
 //				if(Crawler.showLog)
 //					System.out.println();

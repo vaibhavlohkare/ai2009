@@ -56,7 +56,7 @@ public class DupUrlEliminator
 				{
 					if (Crawler.showLog)
 					{
-						System.out.printf("@@@ DupUrlEliminator - duplicate url: %s\n", urlString);
+//						System.out.printf("@@@ DupUrlEliminator - duplicate url: %s\n", urlString);
 					}
 				}
 			}

@@ -47,8 +47,8 @@ public class UrlDispatcher implements Runnable
 				{
 					if (Crawler.showLog)
 					{
-						System.out.printf("@@@ UrlDispatcher, dispatch url: %s\n", 
-								channels[crawlerIndex].urls.elementAt(messageIndex));
+//						System.out.printf("@@@ UrlDispatcher, dispatch url: %s\n", 
+//								channels[crawlerIndex].urls.elementAt(messageIndex));
 					}
 					Crawler.due.process(channels[crawlerIndex].urls.elementAt(messageIndex));
 					
