@@ -1,5 +1,6 @@
 package algorithm;
 
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -216,4 +217,10 @@ public class ExploreReviews {
 	HashMap<String,Integer> userListCount = new HashMap<String,Integer>();
     Vector<String> users = new Vector<String>();
     HashMap<String,Vector<String>> friendMap = new HashMap<String,Vector<String>>();
+    
+	public static void main(String[] args) throws Exception
+	{
+		ExploreReviews er = new ExploreReviews();
+		er.runRecommendationAlgorithm();
+	}
 }
