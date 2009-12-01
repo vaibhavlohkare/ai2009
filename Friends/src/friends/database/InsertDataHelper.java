@@ -29,7 +29,7 @@ public class InsertDataHelper {
 	public void insertReviewData(int rating, String userName, String businessName)
 	{
 		try{
-			dbSt.executeUpdate("INSERT INTO reviews_table " + "VALUES ("+review_unique_id+",'"+userName+"','"+businessName+"',"+rating+")");
+			dbSt.executeUpdate("INSERT INTO reviews " + "VALUES ("+review_unique_id+",'"+userName+"','"+businessName+"',"+rating+")");
 			review_unique_id++;
 		}
 		catch(Exception ex)
@@ -43,7 +43,7 @@ public class InsertDataHelper {
 	{
 		try
 		{
-			dbSt.executeUpdate("INSERT INTO user_friend_table " + "VALUES ( "+userfriend_unique_id+",'"+ userName +"',"+"'" + friendName + "')");
+			dbSt.executeUpdate("INSERT INTO friends " + "VALUES ( "+userfriend_unique_id+",'"+ userName +"',"+"'" + friendName + "')");
 			userfriend_unique_id++;
 		}
 		catch(Exception ex)

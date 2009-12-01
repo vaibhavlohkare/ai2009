@@ -1,18 +1,17 @@
-
+package algorithm;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Vector;
-
 import java.util.Iterator;
 
 public class ExploreReviews {
 	
 	private Connection conn=null;;
 	private Statement dbSt=null;
-	//private ResultSet dbRs=null;
 	public ExploreReviews()
 	{
 		try{
@@ -24,116 +23,16 @@ public class ExploreReviews {
 		}
 	}
 	
-	public ResultSet getReviewData(String userName)
-	{
-		String sqlQuery = "select * from reviews_table where username='"+userName+"'";
-		ResultSet dbRs = null;
-		try
-		{
-			dbRs = dbSt.executeQuery(sqlQuery);
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
-		finally{
-			//try{
-
-				  //dbRs.close();
-			//}
-			//catch(Exception ex){
-			 //     ex.printStackTrace();
-			//}
-		}
-		return dbRs;
-	}
-	
 	//for each of the review made by the user
 	//find all the other user who have commented on it
 	//and then extract the rating made by the user 
 	//and also the rating made by all the other
 	//users 
-	public void getCompanionReviews(String userName)
+	
+	private ResultSet getReviewsInCommon()throws SQLException
 	{
-		//ResultSet set = getReviewData(userName);
-		ResultSet competingReview = null;
-		int currentRating= 0;
-		String reviewId=null;
-		//try
-		//{
-			//while (set.next()) {
-			//	try
-			//	{
-					// retrieve the values for the current row
-			//		 reviewId = set.getString("business");
-			//		 currentRating = set.getInt("rating");
-			//		 System.out.println("business and review "+reviewId+ " "+currentRating);
-			//	}
-			//	catch(Exception ex)
-			//	{
-			//		ex.printStackTrace();
-			//	}
-				//now with the review id obtained find all the users 
-				//who commented on the same review and their rating
-				//String sqlQuery = "select * from reviews_table where business='"+reviewId+"'";
-			      String sqlQuery = "select * from reviews_table where business in (select business from reviews_table where username='"+userName+"')";
-				
-				try
-				{
-					competingReview = dbSt.executeQuery(sqlQuery);
-					
-					//now what we have to do is that we need to search for
-					//the users who have made comments on the same review
-					//compare it current user of interest
-					while( competingReview.next())
-					{
-						String competingUserName = competingReview.getString("username");
-						
-						if(!competingUserName.equals(userName))
-						{
-							System.out.println("competing user name "+competingUserName);
-							int competingRating = competingReview.getInt("rating");
-							double dRating = convertRatingToFloat(competingRating);
-							String user1User2 = competingUserName+":"+userName;
-							if(userListRating.containsKey(user1User2))
-							{
-								double previousRating = userListRating.get(user1User2);
-								previousRating += dRating;
-								userListRating.put(user1User2, previousRating);
-								int count = userListCount.get(user1User2);
-								count += 1;
-								userListCount.put(user1User2, count);
-							}
-							else
-							{
-								userListRating.put(user1User2,dRating);
-								userListCount.put(user1User2,1);
-							}
-						}
-					}
-				}
-				catch(Exception ex)
-				{
-					System.out.println("Failed to execute the competing review query");
-					ex.printStackTrace();
-				}
-				
-			//}
-		//}
-		//catch(Exception ex)
-		//{
-			//ex.printStackTrace();
-		//}
-		finally
-		{
-			try
-			{
-			//set.close();
-			competingReview.close();
-			}
-			catch(Exception ex){}
-		}
-		
+		String sqlQuery = "SELECT R1.userID AS user1, R2.userID AS user2, R1.reviews, R1.reviewRatings as rate1, R2.reviewRatings AS rate2 FROM reviews R1 JOIN reviews R2 ON R1.reviews=R2.reviews WHERE NOT R1.reviews='' AND NOT R2.reviews='' AND NOT R1.reviewRatings='' AND NOT R2.reviewRatings='' AND NOT R1.userID=R2.userID;";
+		return dbSt.executeQuery(sqlQuery);
 	}
 	
 	private double convertRatingToFloat( int rating)
@@ -157,88 +56,144 @@ public class ExploreReviews {
 	
 	public void runRecommendationAlgorithm()
 	{
-		String sqlQuery = "select * from user_friend_table";
-		ResultSet businessReviews = null;
-		boolean doOnce = false;
 		try
 		{
-			businessReviews = dbSt.executeQuery(sqlQuery);
-			while(businessReviews.next())
-			{
-				
-				String friendName = businessReviews.getString("friendName");
-				String userName = businessReviews.getString("userName");
-				if(!users.contains(userName))
+			ResultSet ReviewsInCommonReviews = getReviewsInCommon();
+			UserData user = null;
+			while(ReviewsInCommonReviews.next()) {
+				try
 				{
-					users.add(userName);
-					//getCompanionReviews(userName);
+					user = new UserData(ReviewsInCommonReviews);
 				}
-				//each friend is sepearted by a colon
-				
-				if(friendMap.containsKey(userName))
+				catch(Exception e)
 				{
-					Vector<String> friendList = friendMap.get(userName);
-					friendList.add(friendName);
+					e.printStackTrace();
 				}
-				else
-				{
-					Vector<String> friendList = new Vector<String>();
-					friendMap.put(userName,friendList);
-				}
-				
+				addSubtraction(user.getkey(), user.getSubtraction(), subtractionMap);
+				addUserProfile(user.getkey(), user, useProfiles);
 			}
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
-		
-		for(int i=0; i < users.size(); ++i)
-		{
-			String userName = users.get(i);
-			getCompanionReviews(userName);
-			Iterator it = (Iterator) userListRating.keySet().iterator();
-			while(it.hasNext()) {	
-				String key = (String)it.next();
-				if(key.startsWith(userName))
-				{
-					double rating = userListRating.get(key);
-					double count = (double)userListCount.get(key);
-					double connection = 1- (rating / count);
-					System.out.println("conection between user1 "+userName+" user2 "+getSecondUser(key)+ " connection "+connection);
-					//right now I am saying 80% chance we can tweak this number
-					if( connection > 0.8 )  
-					{
-					   System.out.println("User is more likely to be friends with "+getSecondUser(key));
-					   Vector friendList = friendMap.get(userName);
-					   if (friendList.contains(getSecondUser(key)))
-					   {
-						  System.out.println("User is already friend with recommended user. !!"); 
-					   }
-					}
-			    }
-			}
-		}
 			
+			Iterator iterator = subtractionMap.keySet().iterator();
+			while( iterator. hasNext() )
+			{
+				String userKey = (String)iterator.next();
+				String userInfo = getUserInfo(userKey, useProfiles);
+				double weight = CalculateUsersWeight(userKey,subtractionMap);
+				System.out.printf("%s has the weight %f\n", userInfo, weight);
+			} 
+		
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
-	public String getSecondUser(String user1User2)
+	private String getUserInfo(String user, HashMap<String,UserData> useprofile)
 	{
-		int index = user1User2.indexOf(':');
-		String user2 = user1User2.substring(index+1,user1User2.length());
-		return user2;
+		if (useprofile.containsKey(user))
+		{
+			UserData data = useprofile.get(user);
+			return data.toString();
+		}
+		else
+			return "none";
 	}
 	
-	 public static void main(String [] args)
-	 {
-	         ExploreReviews review = new ExploreReviews();
-	         review.runRecommendationAlgorithm();	         
-	 }
+	private double CalculateUsersWeight(String user, HashMap<String,Vector<Double>> subtractMap)
+	{
+		if (subtractMap.containsKey(user))
+		{
+			Vector<Double> substracts = subtractMap.get(user);
+			int size = substracts.size();
+			double sum = 0.0;
+			for (int i = 0; i < size; i++)
+			{
+				sum += substracts.get(i);
+			}
+			return (1-sum/size);
+		}
+		else
+			return 0.0;
+	}
 	
-	HashMap<String,Double> userListRating = new HashMap<String,Double>();
-	HashMap<String,Integer> userListCount = new HashMap<String,Integer>();
-    Vector<String> users = new Vector<String>();
-    HashMap<String,Vector<String>> friendMap = new HashMap<String,Vector<String>>();
-    
-   
+	private void addUserProfile(String user, UserData data, HashMap<String,UserData> useprofile)
+	{
+		if (!useprofile.containsKey(user))
+		{
+			useprofile.put(user, data);
+		}
+	}
+	
+	private void addSubtraction(String user, double subtract, 
+			HashMap<String,Vector<Double>> subtractMap)
+	{
+		if (subtractMap.containsKey(user))
+		{
+			Vector<Double> stracts = subtractMap.get(user);
+			stracts.add(subtract);
+		}
+		else
+		{
+			Vector<Double> stracts = new Vector<Double>();
+			stracts.add(subtract);
+			subtractMap.put(user, stracts);
+		}
+	}
+	
+	public static void main(String [] args)
+	{
+		ExploreReviews review = new ExploreReviews();
+		review.runRecommendationAlgorithm();	         
+	}
+	
+	HashMap<String,Vector<Double>> 	subtractionMap = new HashMap<String,Vector<Double>>(); 
+	HashMap<String,UserData> useProfiles = new HashMap<String,UserData>();
+	
+    private class UserData
+    {
+    	String user1 = null;
+    	String user2 = null;
+    	String business = null;
+    	int rate1 = 0;
+    	int rate2 = 0;
+    	
+    	public UserData(ResultSet oneRow) throws SQLException
+    	{
+			user1 = oneRow.getString("user1");
+			user2 = oneRow.getString("user2");
+			business = oneRow.getString("reviews");
+			rate1 = oneRow.getInt("rate1");
+			rate2 = oneRow.getInt("rate2");
+    	}
+    	
+    	public boolean equalto(UserData other)
+    	{
+    		if (this.user1 == other.user1 
+    				&& this.user2 == other.user2 
+    				&& this.business == other.business)
+    			return true;
+    		if (this.user1 == other.user2 
+    				&& this.user2 == other.user1 
+    				&& this.business == other.business)
+    			return true;
+    		return false;
+    	}
+    	
+    	public String getkey()
+    	{
+    		return this.user1+this.user2;
+    	}
+    	
+    	public double getSubtraction()
+    	{
+    		return Math.abs(convertRatingToFloat(rate1) - convertRatingToFloat(rate2));
+    	}
+    	
+    	public String toString()
+    	{
+    		return "[user1="+user1+", user2="+user2+"]";
+    	}
+    	
+    }
 }
