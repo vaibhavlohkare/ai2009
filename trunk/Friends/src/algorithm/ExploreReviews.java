@@ -56,6 +56,38 @@ public class ExploreReviews {
 	
 	public void runRecommendationAlgorithm()
 	{
+		String sqlQuery = "select * from friendship";
+		ResultSet businessReviews = null;
+		boolean doOnce = false;
+		try
+		{
+			businessReviews = dbSt.executeQuery(sqlQuery);
+			while(businessReviews.next())
+			{
+				
+				String friendName = businessReviews.getString("friendid");
+				String userName = businessReviews.getString("userid");
+				
+				
+				if(friendMap.containsKey(userName))
+				{
+					Vector<String> friendList = friendMap.get(userName);
+					friendList.add(friendName);
+				}
+				else
+				{
+					Vector<String> friendList = new Vector<String>();
+					friendList.add(friendName);
+					friendMap.put(userName,friendList);
+				}
+				
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
 		try
 		{
 			ResultSet ReviewsInCommonReviews = getReviewsInCommon();
@@ -78,8 +110,22 @@ public class ExploreReviews {
 			{
 				String userKey = (String)iterator.next();
 				String userInfo = getUserInfo(userKey, useProfiles);
+				UserData userInf = useProfiles.get(userKey);
 				double weight = CalculateUsersWeight(userKey,subtractionMap);
 				System.out.printf("%s has the weight %f\n", userInfo, weight);
+				if(weight > 0.5)
+				{
+					Vector<String> friendList = friendMap.get(userInf.user1);
+					if(friendList.contains(userInf.user2))
+					{
+						System.out.println("User is already friend with recommended user. !!");
+					}
+					Vector<String> friendList1 = friendMap.get(userInf.user2);
+					if(friendList.contains(userInf.user1))
+					{
+						System.out.println("User is already friend with recommended user. !!");
+					}
+				}
 			} 
 		
 		}
@@ -196,4 +242,5 @@ public class ExploreReviews {
     	}
     	
     }
+    private HashMap<String,Vector<String>> friendMap = new HashMap<String,Vector<String>>();
 }
