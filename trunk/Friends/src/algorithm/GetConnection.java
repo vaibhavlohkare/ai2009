@@ -9,23 +9,27 @@ import javax.sql.*;
 
 public class GetConnection {
 
-	  public static Connection getSimpleConnection() {
-		      Connection result = null;
-		          try {
-				         Class.forName(fDriverName).newInstance();
-					      }
-			       catch (Exception ex){
-				               System.err.println("Check classpath. Cannot load db driver: " + fDriverName);
-					            }
-
-			            try {
-					           result = DriverManager.getConnection(fDbName, fUserName, fPassword);
-						        }
-				         catch (SQLException e){
-						         System.err.println( "Driver loaded, but cannot connect to db: " + fDbName);
-							      }
-					      return result;
-					        }
+	public static Connection getSimpleConnection() 
+	{
+		Connection result = null;
+		try 
+		{
+			Class.forName(fDriverName).newInstance();
+		}
+		catch (Exception ex)
+		{
+			System.err.println("Check classpath. Cannot load db driver: " + fDriverName);
+		}
+		try 
+		{
+			result = DriverManager.getConnection(fDbName, fUserName, fPassword);
+		}
+		catch (SQLException e)
+		{
+			System.err.println( "Driver loaded, but cannot connect to db: " + fDbName);
+		}
+		return result;
+	}
 
 
 
@@ -75,7 +79,7 @@ private static final String fDriverName = "org.gjt.mm.mysql.Driver";
 */
 private static final String fDbName = "jdbc:mysql://localhost/ai2009";
 private static final String fUserName = "root";
-private static final String fPassword = "root";
+private static final String fPassword = "10ZM!)zm";
 
 private static final String fDATASOURCE_CONTEXT = "java:comp/env/jdbc/blah";
 } 
