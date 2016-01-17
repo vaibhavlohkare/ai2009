@@ -1,0 +1,1 @@
+We will rule the world one day, but project is to show case some data mining capability of finding a independent truth on a social networking sites, certain user behavior will lead people to becoming friends.
